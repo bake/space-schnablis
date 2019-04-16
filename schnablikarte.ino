@@ -14,22 +14,20 @@ struct entity_t
 	float x, y;
 	float dx, dy;
 	int width, height;
-	int speed;
 	uint8_t *sprite;
 };
 
-entity_t entity_t_new_schnabli(int y, int speed)
+entity_t entity_t_new_schnabli(int y)
 {
 	int width = 100;
 	int height = 41;
 	return entity_t{
-			.x = float(WIDTH - width),
+			.x = float(WIDTH),
 			.y = float(y),
-			.dx = random(100, 500) / 100.0,
-			.dy = random(10, 50) / 100.0,
+			.dx = random(200, 500) / 100.0,
+			.dy = random(0, 0) / 100.0,
 			.width = width,
 			.height = height,
-			.speed = speed,
 			.sprite = (uint8_t *)space_schnabli_100,
 	};
 }
@@ -41,30 +39,50 @@ void entity_t_update(entity_t *e)
 	entity_t_clear(e);
 }
 
+// Clear leftover pixels. The platypus is always flying towards the upper left
+// corner, so only the bottom and right side needs to be cleaned.
 void entity_t_clear(entity_t *e)
 {
-	// The platypus is always flying towards the upper left corner, so only the bottom and right side needs to be cleaned.
 	tft.fillRect(e->x + e->width, e->y, ceil(e->dx), e->height, BACKGROUND);
 	tft.fillRect(e->x, e->y + e->height, e->width, ceil(e->dy), BACKGROUND);
-	/*
-		if (e->x < -e->width / 2) {
-		tft.fillRect(0, e->y, e->width / 2, e->height, BACKGROUND);
-		}
-	*/
 }
 
 void entity_t_move(entity_t *e)
 {
 	e->x -= e->dx;
 	e->y -= e->dy;
-	if (e->x < -e->width / 2)
+	if (e->x < -e->width)
 	{
-		e->x = WIDTH - e->width - 1;
+		e->x = WIDTH;
 	}
 }
 
 void entity_t_draw(entity_t *e)
 {
+	tft.fillRect(0, 0, WIDTH, 20, BACKGROUND);
+	tft.setCursor(0, 0);
+
+	if (e->x < 0)
+	{
+		int x_off = -e->x;
+		for (int y = 0; y < e->height; y++)
+		{
+			tft.setAddrWindow(0, e->y + y, e->width - x_off, 1);
+			tft.pushColors(&e->sprite[(y * e->width + x_off) * 2], e->width - x_off, 1, false);
+		}
+		return;
+	}
+
+	if (e->x + e->width > WIDTH)
+	{
+		for (int y = 0; y < e->height; y++)
+		{
+			tft.setAddrWindow(e->x, e->y + y, WIDTH - e->x, 1);
+			tft.pushColors(&e->sprite[(y * e->width) * 2], WIDTH - e->x, 1, false);
+		}
+		return;
+	}
+
 	tft.setAddrWindow(e->x, e->y, e->x + e->width - 1, e->y + e->height - 1);
 	tft.pushColors(e->sprite, e->width * e->height, 1, false);
 }
@@ -81,15 +99,14 @@ void setup()
 	tft.setRotation(3);
 	tft.fillScreen(BACKGROUND);
 
-	// TODO: The thee speeds should be different from eachother.
-	schnabli_1 = entity_t_new_schnabli(50, random(-5, -1));
-	schnabli_2 = entity_t_new_schnabli(150, random(-5, -1));
-	schnabli_3 = entity_t_new_schnabli(250, random(-5, -1));
+	schnabli_1 = entity_t_new_schnabli(50);
+	schnabli_2 = entity_t_new_schnabli(150);
+	schnabli_3 = entity_t_new_schnabli(250);
 }
 
 void loop()
 {
 	entity_t_update(&schnabli_1);
-	// entity_t_update(&schnabli_2);
-	// entity_t_update(&schnabli_3);
+	entity_t_update(&schnabli_2);
+	entity_t_update(&schnabli_3);
 }
