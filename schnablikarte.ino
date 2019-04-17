@@ -17,19 +17,11 @@ struct entity_t
 	uint8_t *sprite;
 };
 
-entity_t entity_t_new_schnabli(int y)
+struct star_t
 {
-	int width = 100;
-	int height = 41;
-	return entity_t{
-			.x = float(WIDTH),
-			.y = float(y),
-			.dx = random(200, 500) / 100.0,
-			.dy = random(0, 0) / 100.0,
-			.width = width,
-			.height = height,
-			.sprite = (uint8_t *)space_schnabli_100,
-	};
+	float x, y;
+	float dx;
+};
 
 /* entity_t */
 
@@ -123,10 +115,50 @@ entity_t entity_t_new_schnabli(int y)
 	return s;
 }
 
+/* stars */
+
+star_t star_t_new()
+{
+	return star_t{
+		x : (float)random(0, WIDTH - 1),
+		y : (float)random(0, HEIGHT - 1),
+		dx : random(10, 100) / 100.0,
+	};
+}
+
+void star_t_update(star_t *s)
+{
+	star_t_clear(s);
+	star_t_move(s);
+	star_t_draw(s);
+}
+
+void star_t_move(star_t *s)
+{
+	s->x += s->dx;
+	if (s->x > WIDTH)
+	{
+		s->x = 0;
+	}
+}
+
+void star_t_clear(star_t *s)
+{
+	tft.drawPixel(s->x, s->y, BLACK);
+}
+
+void star_t_draw(star_t *s)
+{
+	tft.drawPixel(s->x, s->y, WHITE);
+}
+
 /* main */
 
 entity_t schnablis[3];
 uint8_t schnablis_num = sizeof(schnablis) / sizeof(*schnablis);
+
+star_t stars[25];
+uint8_t stars_num = sizeof(stars) / sizeof(*stars);
 
 void setup()
 {
@@ -136,6 +168,10 @@ void setup()
 	tft.setRotation(3);
 	tft.fillScreen(BLACK);
 
+	for (int i = 0; i < stars_num; i++)
+	{
+		stars[i] = star_t_new();
+	}
 	for (int i = 0; i < schnablis_num; i++)
 	{
 		uint16_t y = HEIGHT / schnablis_num * i;
@@ -146,6 +182,10 @@ void setup()
 
 void loop()
 {
+	for (int i = 0; i < stars_num; i++)
+	{
+		star_t_update(&stars[i]);
+	}
 	for (int i = 0; i < schnablis_num; i++)
 	{
 		entity_t_update(&schnablis[i]);
