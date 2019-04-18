@@ -20,13 +20,14 @@ MCUFRIEND_kbv tft;
 #define MAXPRESSURE 1000
 
 // Number of frames a spark is alive.
-#define SPARK_AGE 25
-#define SPARKS_PER_TAP 8
+#define SPARK_AGE_MIN 25
+#define SPARK_AGE_MAX 35
+#define SPARKS_PER_TAP 10
 
 // Frames between spawning fireworks.
 #define FIREWORK_CD 5
 // Chance that a random firework explodes.
-#define FIREWORK_CHANCE 25
+#define FIREWORK_CHANCE 20
 
 struct entity_t
 {
@@ -258,7 +259,7 @@ void firework_new(int x, int y, bool force)
 		{
 			continue;
 		}
-		if (sparks_added > SPARKS_PER_TAP)
+		if (sparks_added >= SPARKS_PER_TAP)
 		{
 			break;
 		}
@@ -267,7 +268,7 @@ void firework_new(int x, int y, bool force)
 		sparks[i].y = y;
 		sparks[i].dx = random(-200, 200) / 100.0;
 		sparks[i].dy = random(-200, 200) / 100.0;
-		sparks[i].age = SPARK_AGE;
+		sparks[i].age = random(SPARK_AGE_MIN, SPARK_AGE_MAX);
 		sparks[i].color = color;
 	}
 }
