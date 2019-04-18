@@ -6,6 +6,7 @@ MCUFRIEND_kbv tft;
 
 #define BLACK 0x0000
 #define WHITE 0xffff
+#define GRAY 0xce59
 #define RED 0xe000
 #define ORANGE 0xfc60
 #define YELLOW 0xff60
@@ -41,6 +42,7 @@ struct star_t
 {
 	float x, y;
 	float dx;
+	uint16_t color;
 };
 
 struct spark_t
@@ -167,6 +169,7 @@ star_t star_t_new()
 		x : (float)random(0, WIDTH - 1),
 		y : (float)random(0, HEIGHT - 1),
 		dx : random(10, 100) / 100.0,
+		color : GRAY,
 	};
 }
 
@@ -193,7 +196,7 @@ void star_t_clear(star_t *s)
 
 void star_t_draw(star_t *s)
 {
-	tft.drawPixel(s->x, s->y, WHITE);
+	tft.drawPixel(s->x, s->y, s->color);
 }
 
 /* sparks */
