@@ -57,7 +57,7 @@ const int XP = 8, XM = A2, YP = A3, YM = 9;
 const int TS_LEFT = 97, TS_RT = 949, TS_BOT = 128, TS_TOP = 905;
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
-entity_t schnablis[3];
+entity_t schnablis[2];
 uint8_t schnablis_num = sizeof(schnablis) / sizeof(*schnablis);
 
 star_t stars[25];
@@ -73,8 +73,8 @@ uint8_t spark_colors_num = sizeof(spark_colors) / sizeof(uint16_t);
 
 void entity_t_randomize_angles(entity_t *e)
 {
-	e->dx = random(200, 500) / 100.0;
-	e->dy = random(10, 100) / 100.0;
+	e->dx = random(300, 600) / 100.0;
+	e->dy = random(15, 150) / 100.0;
 }
 
 void entity_t_update(entity_t *e)
