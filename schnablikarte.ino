@@ -28,7 +28,7 @@ MCUFRIEND_kbv tft;
 // Frames between spawning fireworks.
 #define FIREWORK_CD 5
 // Chance that a random firework explodes.
-#define FIREWORK_CHANCE 20
+#define FIREWORK_CHANCE 15
 
 struct entity_t
 {
@@ -229,17 +229,17 @@ void spark_t_move(spark_t *s)
 
 void spark_t_clear(spark_t *s)
 {
-	tft.drawPixel(s->x, s->y, BLACK);
+	tft.fillCircle(s->x, s->y, 1, BLACK);
 }
 
 void spark_t_draw(spark_t *s)
 {
-	tft.drawPixel(s->x, s->y, s->color);
+	tft.fillCircle(s->x, s->y, 1, s->color);
 }
 
 /* firework */
 
-int firework_cd = FIREWORK_CD;
+int firework_cd = 0;
 
 // Spawn same colored sparks. If force is true, a soarks are created regardless
 // of the fireworks cooldown.
