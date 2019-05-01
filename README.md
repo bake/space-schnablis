@@ -59,4 +59,4 @@ upper end does not create glitches).
 
 For example of this, erm, ball only the left half should be visible. That's why
 there are five (its height) individual calls to `pushColors` with six colors
-each (now that I think of it, my functions should probably be snake cased).
+each (now that I think of it, my functions should probably be camel cased).
